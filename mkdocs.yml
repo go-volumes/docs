@@ -1,0 +1,43 @@
+site_name: go-volumes
+site_description: Pure-Go copy-on-write pooled volume manager — a ZFS-inspired alternative to LVM. No cgo, no root.
+site_url: https://go-volumes.github.io/docs/
+repo_url: https://github.com/go-volumes
+repo_name: go-volumes
+edit_uri: ""
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle: { icon: material/weather-night, name: Dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle: { icon: material/weather-sunny, name: Light mode }
+  features: [navigation.sections, navigation.top, content.code.copy, search.suggest]
+
+extra_css: [stylesheets/brand.css]
+extra:
+  version:
+    provider: mike
+
+markdown_extensions:
+  - admonition
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.highlight
+
+nav:
+  - Home: index.md
+  - Concepts: concepts.md
+  - Components:
+      - Overview: components/index.md
+      - pool: components/pool.md
