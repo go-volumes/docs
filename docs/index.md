@@ -1,25 +1,30 @@
 # go-volumes
 
-Pure-Go copy-on-write **pooled volume manager** — a small, ZFS-inspired
-alternative to LVM thin provisioning. No cgo, no root, no device-mapper.
+Pure-Go **block storage** — a copy-on-write volume **pool** plus pluggable
+**backings**, with no cgo and no root.
 
-A **pool** owns a flat array of fixed-size physical blocks backed by a single
-file. **Volumes** are logical block devices carved out of the pool;
-**snapshots** are immutable, reference-counted captures; **clones** are instant,
-space-shared writable branches. Writes are copy-on-write, so overwriting a block
-shared with a snapshot allocates a fresh block and leaves the snapshot
-untouched.
+A **pool** owns a flat array of fixed-size physical blocks; **volumes** are
+logical block devices carved out of it; **snapshots** are immutable,
+reference-counted captures; **clones** are instant, space-shared writable
+branches. Writes are copy-on-write, so overwriting a block shared with a
+snapshot allocates a fresh block and leaves the snapshot untouched — a small,
+ZFS-inspired alternative to LVM thin provisioning.
 
-It pairs with [go-filesystems](https://github.com/go-filesystems): a `Volume`
-implements the same block-backend shape (`ReadAt`/`WriteAt`/`Sync`/`Size`/
-`Truncate`/`Close`) those ext4/xfs drivers accept via `OpenFromDevice`, so you
-can format and mount a real filesystem straight onto a pool volume.
+A tiny **`Device` contract** (`ReadAt`/`WriteAt`/`Size`/`Sync`/`Close`) is all a
+filesystem driver sees, so *where* the bytes live is pluggable: a local file,
+S3-compatible **object storage**, or an immutable, content-addressed **OCI
+artifact**. It pairs with [go-filesystems](https://github.com/go-filesystems):
+a `Volume` is exactly the block-backend shape its ext4/xfs drivers accept, so
+you can format and mount a real filesystem straight onto a pool volume.
 
 ## Components
 
-<div class="fs-grid" markdown>
-<a class="fs-card" href="components/pool.md"><img src="assets/fs/go-volumes-pool.png"><span><code>pool</code><br><small>CoW pooled volume manager — volumes, snapshots, clones, sparse raw export/import.</small></span></a>
-</div>
+| Module | Layer | What it does |
+|--------|-------|--------------|
+| [`interface`](components/interface.md) | contract | The block-device `Device` contract every layer reads and writes through. |
+| [`pool`](components/pool.md) | pool | Copy-on-write volume pool — volumes, snapshots, clones; fails cleanly with `ErrPoolFull`. |
+| [`s3`](components/s3.md) | backing | S3-backed block store (pool `Backing`); from-scratch AWS SigV4, stdlib only. |
+| [`oci`](components/oci.md) | backing | Freeze a volume into an immutable, content-addressed OCI artifact; re-open read-only. |
 
 ## Why not LVM?
 

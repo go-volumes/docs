@@ -1,5 +1,5 @@
 site_name: go-volumes
-site_description: Pure-Go copy-on-write pooled volume manager — a ZFS-inspired alternative to LVM. No cgo, no root.
+site_description: Pure-Go block storage — a copy-on-write volume pool plus pluggable backings (local file, S3, OCI artifact). No cgo, no root.
 site_url: https://go-volumes.github.io/docs/
 repo_url: https://github.com/go-volumes
 repo_name: go-volumes
@@ -40,4 +40,7 @@ nav:
   - Concepts: concepts.md
   - Components:
       - Overview: components/index.md
-      - pool: components/pool.md
+      - "interface — the Device contract": components/interface.md
+      - "pool — CoW volume pool": components/pool.md
+      - "s3 — object-storage backing": components/s3.md
+      - "oci — OCI-artifact backing": components/oci.md
