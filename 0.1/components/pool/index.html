@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -724,28 +724,28 @@ immutable, reference-counted captures of a volume; <strong>clones</strong> are i
 space-shared writable branches. Writes are copy-on-write — see
 <a href="../../concepts/">Concepts</a> for the model and the anti-LVM thesis.</p>
 <h2 id="usage">Usage</h2>
-<div class="highlight"><pre><span></span><code><span class="nx">p</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">pool</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="s">&quot;data.pool&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="c1">// 64 MiB pool</span>
+<div class="highlight"><pre><span></span><code><span class="nx">p</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">pool</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="s">"data.pool"</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="c1">// 64 MiB pool</span>
 <span class="k">defer</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
 
-<span class="nx">vol</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">CreateVolume</span><span class="p">(</span><span class="s">&quot;root&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">)</span>
+<span class="nx">vol</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">CreateVolume</span><span class="p">(</span><span class="s">"root"</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">)</span>
 <span class="nx">vol</span><span class="p">.</span><span class="nx">WriteAt</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">off</span><span class="p">)</span><span class="w">                   </span><span class="c1">// copy-on-write</span>
 
-<span class="nx">p</span><span class="p">.</span><span class="nx">Snapshot</span><span class="p">(</span><span class="s">&quot;root&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;before-upgrade&quot;</span><span class="p">)</span><span class="w">     </span><span class="c1">// immutable snapshot</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">Snapshot</span><span class="p">(</span><span class="s">"root"</span><span class="p">,</span><span class="w"> </span><span class="s">"before-upgrade"</span><span class="p">)</span><span class="w">     </span><span class="c1">// immutable snapshot</span>
 <span class="c1">// ... keep writing to vol; the snapshot is undisturbed ...</span>
 
-<span class="nx">snap</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">OpenVolume</span><span class="p">(</span><span class="s">&quot;before-upgrade&quot;</span><span class="p">)</span>
+<span class="nx">snap</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">OpenVolume</span><span class="p">(</span><span class="s">"before-upgrade"</span><span class="p">)</span>
 <span class="nx">snap</span><span class="p">.</span><span class="nx">ReadAt</span><span class="p">(</span><span class="nx">buf</span><span class="p">,</span><span class="w"> </span><span class="nx">off</span><span class="p">)</span><span class="w">                    </span><span class="c1">// original bytes</span>
 
 <span class="c1">// Instant, space-shared writable clone (ZFS-style).</span>
-<span class="nx">clone</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Clone</span><span class="p">(</span><span class="s">&quot;before-upgrade&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;vm1&quot;</span><span class="p">)</span>
+<span class="nx">clone</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Clone</span><span class="p">(</span><span class="s">"before-upgrade"</span><span class="p">,</span><span class="w"> </span><span class="s">"vm1"</span><span class="p">)</span>
 <span class="nx">clone</span><span class="p">.</span><span class="nx">WriteAt</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="w"> </span><span class="nx">off</span><span class="p">)</span><span class="w">                 </span><span class="c1">// diverges from the origin, CoW</span>
 </code></pre></div>
 <h2 id="mounting-a-filesystem-on-a-volume">Mounting a filesystem on a volume</h2>
 <p>A <code>Volume</code> implements the block-backend shape the
 <a href="https://github.com/go-filesystems">go-filesystems</a> drivers accept, so you can
 format and mount a real filesystem straight onto it:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">vol</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">CreateVolume</span><span class="p">(</span><span class="s">&quot;root&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">)</span>
-<span class="nx">fs</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ext4</span><span class="p">.</span><span class="nx">OpenFromDevice</span><span class="p">(</span><span class="nx">vol</span><span class="p">)</span><span class="w">        </span><span class="c1">// ext4 driver, no idea it&#39;s on a pool</span>
+<div class="highlight"><pre><span></span><code><span class="nx">vol</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">CreateVolume</span><span class="p">(</span><span class="s">"root"</span><span class="p">,</span><span class="w"> </span><span class="mi">32</span><span class="o">&lt;&lt;</span><span class="mi">20</span><span class="p">)</span>
+<span class="nx">fs</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">ext4</span><span class="p">.</span><span class="nx">OpenFromDevice</span><span class="p">(</span><span class="nx">vol</span><span class="p">)</span><span class="w">        </span><span class="c1">// ext4 driver, no idea it's on a pool</span>
 </code></pre></div>
 <div class="admonition success">
 <p class="admonition-title">Verified end-to-end</p>
@@ -759,10 +759,10 @@ snapshot was fully isolated.</p>
 <h2 id="raw-images-eg-apple-virtualizationframework-vz">Raw images (e.g. Apple Virtualization.framework / vz)</h2>
 <p>Some consumers only accept <strong>raw disk files</strong> and do block I/O on them at the
 kernel level — they can't call a Go block backend. The pool bridges to them:</p>
-<div class="highlight"><pre><span></span><code><span class="nx">clone</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Clone</span><span class="p">(</span><span class="s">&quot;golden&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;vm1&quot;</span><span class="p">)</span>
-<span class="nx">clone</span><span class="p">.</span><span class="nx">ExportRawFile</span><span class="p">(</span><span class="s">&quot;vm1.raw&quot;</span><span class="p">)</span><span class="w">           </span><span class="c1">// sparse raw image for vz to boot</span>
+<div class="highlight"><pre><span></span><code><span class="nx">clone</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">p</span><span class="p">.</span><span class="nx">Clone</span><span class="p">(</span><span class="s">"golden"</span><span class="p">,</span><span class="w"> </span><span class="s">"vm1"</span><span class="p">)</span>
+<span class="nx">clone</span><span class="p">.</span><span class="nx">ExportRawFile</span><span class="p">(</span><span class="s">"vm1.raw"</span><span class="p">)</span><span class="w">           </span><span class="c1">// sparse raw image for vz to boot</span>
 <span class="c1">// ... vz runs and writes vm1.raw ...</span>
-<span class="nx">p</span><span class="p">.</span><span class="nx">ImportRawFile</span><span class="p">(</span><span class="s">&quot;vm1-after&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;vm1.raw&quot;</span><span class="p">)</span><span class="w">  </span><span class="c1">// back under pool management; snapshot it</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">ImportRawFile</span><span class="p">(</span><span class="s">"vm1-after"</span><span class="p">,</span><span class="w"> </span><span class="s">"vm1.raw"</span><span class="p">)</span><span class="w">  </span><span class="c1">// back under pool management; snapshot it</span>
 </code></pre></div>
 <p><code>ExportRaw</code> writes only allocated blocks (the rest stay holes → sparse);
 <code>ImportRaw</code> leaves all-zero blocks unallocated (thin). This gives raw-only
@@ -901,7 +901,7 @@ provisioning, and safe snapshots — while they still see just a raw file.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
