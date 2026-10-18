@@ -1,4 +1,9 @@
-# interface — the `Device` contract
+---
+title: "interface — the Device contract"
+weight: 40
+---
+
+# interface — the `Device` contract {#interface-the-device-contract}
 
 `github.com/go-volumes/interface` (Go package `volume`) is the shared
 **block-device contract** for the family. Zero dependencies — `io` only,
@@ -8,7 +13,7 @@ It decouples **where** the bytes live (a pooled file volume, an S3-backed chunk
 store, an NBD export, a qcow2/raw image) from the **format** layered on top
 (ext4, xfs, squashfs, an OCI image).
 
-## `Device`
+## `Device` {#device}
 
 ```go
 type Device interface {
@@ -21,12 +26,12 @@ type Device interface {
 ```
 
 `Device` is deliberately the **intersection of what a real backing already
-offers**: [`pool`](pool.md)'s `*Volume` satisfies it **verbatim**.
+offers**: [`pool`]({{< relref "pool.md" >}})'s `*Volume` satisfies it **verbatim**.
 
 `ReadOnly` is the read-only subset (a read-only file, a squashfs/iso9660 blob, a
 read-only NBD export, an OCI image). Any `Device` also satisfies it.
 
-## Optional capabilities
+## Optional capabilities {#optional-capabilities}
 
 A consumer type-asserts for these and degrades gracefully when a device does not
 implement one:
@@ -39,5 +44,5 @@ implement one:
 | `Discarder` | TRIM/unmap a byte range so a thin/sparse backing reclaims space |
 
 A [go-filesystems](https://github.com/go-filesystems) driver writes its on-disk
-image through a `Device`, never caring which backing — [`pool`](pool.md),
-[`s3`](s3.md), [`oci`](oci.md), or a raw file — is underneath.
+image through a `Device`, never caring which backing — [`pool`]({{< relref "pool.md" >}}),
+[`s3`]({{< relref "s3.md" >}}), [`oci`]({{< relref "oci.md" >}}), or a raw file — is underneath.

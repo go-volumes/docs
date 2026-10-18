@@ -1,4 +1,9 @@
-# pool
+---
+title: "pool — CoW volume pool"
+weight: 50
+---
+
+# pool {#pool}
 
 `import "github.com/go-volumes/pool"`
 
@@ -9,9 +14,9 @@ A pool owns a flat array of fixed-size physical blocks backed by a single file.
 **Volumes** are logical block devices carved out of the pool; **snapshots** are
 immutable, reference-counted captures of a volume; **clones** are instant,
 space-shared writable branches. Writes are copy-on-write — see
-[Concepts](../concepts.md) for the model and the anti-LVM thesis.
+[Concepts]({{< relref "../concepts.md" >}}) for the model and the anti-LVM thesis.
 
-## Usage
+## Usage {#usage}
 
 ```go
 p, _ := pool.Create("data.pool", 64<<20) // 64 MiB pool
@@ -31,7 +36,7 @@ clone, _ := p.Clone("before-upgrade", "vm1")
 clone.WriteAt(data, off)                 // diverges from the origin, CoW
 ```
 
-## Mounting a filesystem on a volume
+## Mounting a filesystem on a volume {#mounting-a-filesystem-on-a-volume}
 
 A `Volume` implements the block-backend shape the
 [go-filesystems](https://github.com/go-filesystems) drivers accept, so you can
@@ -42,15 +47,18 @@ vol, _ := p.CreateVolume("root", 32<<20)
 fs, _ := ext4.OpenFromDevice(vol)        // ext4 driver, no idea it's on a pool
 ```
 
-!!! success "Verified end-to-end"
-    A real ext4 filesystem (the `go-filesystems/ext4` driver) was run live on a
-    pool volume via `OpenFromDevice`: a file written, the volume snapshotted,
-    the live file overwritten and a new file added. Read back through ext4, the
-    **live** volume showed the new state while the **snapshot** showed the exact
-    pre-snapshot filesystem — ext4 never knew it was on a CoW pool, and the
-    snapshot was fully isolated.
+{{< callout type="info" >}}
+**Verified end-to-end**
 
-## Raw images (e.g. Apple Virtualization.framework / vz)
+A real ext4 filesystem (the `go-filesystems/ext4` driver) was run live on a
+pool volume via `OpenFromDevice`: a file written, the volume snapshotted,
+the live file overwritten and a new file added. Read back through ext4, the
+**live** volume showed the new state while the **snapshot** showed the exact
+pre-snapshot filesystem — ext4 never knew it was on a CoW pool, and the
+snapshot was fully isolated.
+{{< /callout >}}
+
+## Raw images (e.g. Apple Virtualization.framework / vz) {#raw-images-eg-apple-virtualizationframework-vz}
 
 Some consumers only accept **raw disk files** and do block I/O on them at the
 kernel level — they can't call a Go block backend. The pool bridges to them:
@@ -67,7 +75,7 @@ p.ImportRawFile("vm1-after", "vm1.raw")  // back under pool management; snapshot
 hypervisors what they lack natively — instant golden-image clones, thin
 provisioning, and safe snapshots — while they still see just a raw file.
 
-## API surface
+## API surface {#api-surface}
 
 | Pool | |
 |------|---|
@@ -87,7 +95,7 @@ provisioning, and safe snapshots — while they still see just a raw file.
 | `ExportRaw` / `ExportRawFile` | sparse raw export (the vz bridge) |
 | `Sync` / `Close` / `Truncate` | block-backend compatibility |
 
-## Status / limitations
+## Status / limitations {#status-limitations}
 
 - Single backing file (multi-device pooling / RAID is a planned follow-up).
 - Fixed volume size at creation; online grow/shrink not yet implemented.
