@@ -1,6 +1,11 @@
-# Concepts
+---
+title: "Concepts"
+weight: 20
+---
 
-## The thesis — why not LVM?
+# Concepts {#concepts}
+
+## The thesis — why not LVM? {#the-thesis-why-not-lvm}
 
 LVM thin snapshots can **corrupt** when the pool fills past a threshold: a
 non-CoW filesystem like ext4 or XFS overwrites blocks in place and assumes they
@@ -20,7 +25,7 @@ are left inconsistent.
 This is the ZFS behaviour — refuse the write, keep snapshots intact — brought to
 non-CoW filesystems via a block layer underneath them.
 
-## Pools, volumes, snapshots, clones
+## Pools, volumes, snapshots, clones {#pools-volumes-snapshots-clones}
 
 | Term | Meaning |
 |------|---------|
@@ -29,7 +34,7 @@ non-CoW filesystems via a block layer underneath them.
 | **Snapshot** | An immutable, reference-counted capture of a volume at a point in time. |
 | **Clone** | An instant, space-shared *writable* branch (ZFS-style). Writes to the clone or its origin diverge independently via CoW. |
 
-## Copy-on-write
+## Copy-on-write {#copy-on-write}
 
 A write to a block that is owned exclusively (refcount 1) goes in place. A write
 to a block shared with a snapshot or clone allocates a fresh block, copies the
@@ -38,7 +43,7 @@ the reference to the old block. The allocation is the only step that can fail
 when the pool is full, and it fails before any mutation — so prior data and
 snapshots are never left half-written.
 
-## Filesystem-agnostic
+## Filesystem-agnostic {#filesystem-agnostic}
 
 A `Volume` implements `ReadAt`, `WriteAt`, `Sync`, `Size`, `Truncate`, `Close`
 — the same block-backend shape the
@@ -47,15 +52,16 @@ A `Volume` implements `ReadAt`, `WriteAt`, `Sync`, `Size`, `Truncate`, `Close`
 driver** straight onto a pool volume, and it composes with
 [go-fde](https://github.com/go-fde) for encryption (pool → fde → fs).
 
-!!! note
-    ext4/XFS are not themselves copy-on-write — they overwrite in place. The
-    snapshot safety here comes from the pool layer underneath them, not from the
-    filesystem.
+{{< callout type="info" >}}
+ext4/XFS are not themselves copy-on-write — they overwrite in place. The
+snapshot safety here comes from the pool layer underneath them, not from the
+filesystem.
+{{< /callout >}}
 
 XFS historically had no free integrated volume manager (SGI's XLV/XVM were
 proprietary), so a CoW pool under XFS fills a real gap.
 
-## Raw images — the vz bridge
+## Raw images — the vz bridge {#raw-images-the-vz-bridge}
 
 Some consumers only accept **raw disk files** and do block I/O on them at the
 kernel level — they can't call a Go block backend. Apple's
